@@ -6,6 +6,10 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.Random;
 import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.*;
 
 public class GamePanel extends JPanel implements ActionListener {
 	
@@ -114,12 +118,22 @@ public class GamePanel extends JPanel implements ActionListener {
 	}
 	
 	public void checkApples() {
-		if(x[0] == appleX && y[0] == appleY) {
-			applesEaten++;
-			bodyParts++;
-			newApple();
-		}
+	    if (x[0] == appleX && y[0] == appleY) {
+	        try {
+	            File point = new File("point.wav");
+	            AudioInputStream au = AudioSystem.getAudioInputStream(point);
+	            Clip clip = AudioSystem.getClip();
+	            clip.open(au);
+	            clip.start();
+	        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+	            System.err.println("Error playing sound: " + e.getMessage());
+	        }
+	        applesEaten++;
+	        bodyParts++;
+	        newApple();
+	    }
 	}
+
 	
 	public void checkCollisions() {
 		
@@ -150,6 +164,15 @@ public class GamePanel extends JPanel implements ActionListener {
 	}
 	
 	public void gameOver(Graphics g) {
+		try {
+            File point = new File("game-over.wav");
+            AudioInputStream au = AudioSystem.getAudioInputStream(point);
+            Clip clip = AudioSystem.getClip();
+            clip.open(au);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            System.err.println("Error playing sound: " + e.getMessage());
+        }
 		//display score on final screen
 		g.setColor(Color.white);
 		g.setFont(new Font("Monospace", Font.BOLD, 30));
